@@ -1,0 +1,16 @@
+body {
+  background-color: $primary-color;
+  color: $dark-primary-color;
+  text-align: center;
+}
+
+.vcenter {
+  border: 1px solid transparent;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.alert {
+  margin-bottom: 0;
+}
