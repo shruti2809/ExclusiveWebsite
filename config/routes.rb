@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  get 'waiting' => 'home#waiting', as: :waiting
 
   resources :users
   # The priority is based upon order of creation: first created -> highest priority.
