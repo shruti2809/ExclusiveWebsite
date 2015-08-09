@@ -30,3 +30,4 @@ private
   def ticket_params
     params.require(:ticket).permit(:name, :email)
   end
+end
