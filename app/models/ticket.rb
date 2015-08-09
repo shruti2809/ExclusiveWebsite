@@ -35,6 +35,16 @@ class Ticket < ActiveRecord::Base
     self.update_attribute(:waiting, wting)
   end
 
+  def publish_pubnub
+    pubnub = Pubnub.new(
+      subscribe_key: ENV['PUBNUB_SUBSCRIBE_KEY'],
+      publish_key: ENV['PUBNUB_PUBLISH_KEY']
+    )
+
+    cb = lambda { |envelope| puts envelope.message }
+    pubnub.publish(message: "Hello from Ticket#{self.ticket_no}", channel: "queue", callback: cb)
+  end
+
 private
   def set_token_details
     return unless self.new_record?

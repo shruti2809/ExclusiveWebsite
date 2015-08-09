@@ -1,3 +1,4 @@
+
 <div id="land">
   <div class="vcenter">
     <h1>Exclusive. Deals. Every. 10. Minutes.</h1>
@@ -23,3 +24,13 @@
     });
   </script>
 <% end %>
+
+<script type="text/javascript">
+  var PUBNUB_SERVICE = PUBNUB.init({
+    subscribe_key: '<%= ENV["PUBNUB_SUBSCRIBE_KEY"] %>'
+  });
+  PUBNUB_SERVICE.subscribe({
+    channel: 'queue',
+    message: function(m){console.log(m)}
+});
+</script>

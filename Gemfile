@@ -42,7 +42,7 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'whenever', :require => false
-  
+  gem 'dotenv-rails'
 end
 
 gem 'bootstrap-sass'
@@ -52,3 +52,4 @@ gem 'simple_form'
 gem 'annotate'
 gem 'flipclockjs-rails'
 gem 'random_password_generator'
+gem 'pubnub'
