@@ -12,7 +12,7 @@
     <%= simple_form_for @new_ticket do |f| %>
       <%= f.input :name, label: false, placeholder: "Your Name..." %>
       <%= f.input :email, label: false, placeholder: "Your Email..." %>
-      <%= f.submit "Take Ticket ##{@new_ticket.ticket_no}", class: "btn" %>
+      <%= f.submit "Take Ticket ##{@new_ticket.ticket_no}", class: "btn", id: "createTicketBtn" %>
     <% end %>
   </div>
 </div>
@@ -31,6 +31,8 @@
   });
   PUBNUB_SERVICE.subscribe({
     channel: 'queue',
-    message: function(m){console.log(m)}
+    message: function(m){
+      $('#createTicketBtn').val('Take Ticket #' + m.next_ticket_no);
+    }
 });
 </script>
