@@ -1,10 +1,9 @@
-
 <div id="land">
   <div class="vcenter">
     <h1>Exclusive. Deals. Every. 10. Minutes.</h1>
       <% if current_ticket.ticket %>
-        <h2><%= pluralize(@waiting_count, 'person') %> are in queue</h2>
-        <h2>Currently serving Ticket #<%= current_ticket.ticket.ticket_no %></h2>
+        <h2><span id="waiting_count"><%= @waiting_count %></span> people are in queue</h2>
+        <h2>Currently serving <strong><span id="serving_name"><%= current_ticket.ticket.name %></span></strong> Ticket #<span id="serving_no"><%= current_ticket.ticket.ticket_no %></span></h2>
       <% else %>
         Yey! No waiting! Claim before someone pushes you into a queue!!
       <% end %>
@@ -32,7 +31,18 @@
   PUBNUB_SERVICE.subscribe({
     channel: 'queue',
     message: function(m){
-      $('#createTicketBtn').val('Take Ticket #' + m.next_ticket_no);
+      if (m.next_ticket_no) {
+        $('#createTicketBtn').val('Take Ticket #' + m.next_ticket_no);
+      }
+      if (m.waiting_count) {
+        $('#waiting_count').html(m.waiting_count);
+      }
+      if (m.serving_name) {
+        $('#serving_name').html(m.serving_name);
+      }
+      if (m.serving_no) {
+        $('#serving_no').html(m.serving_no);
+      }
     }
 });
 </script>

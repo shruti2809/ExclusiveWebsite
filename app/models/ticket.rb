@@ -1,15 +1,3 @@
-# == Schema Information
-#
-# Table name: tickets
-#
-#  id         :integer          not null, primary key
-#  name       :string
-#  email      :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  ticket_no  :integer
-#  waiting    :boolean          default(TRUE)
-#
 
 class Ticket < ActiveRecord::Base
   scope :waiting, -> {where(waiting: true)}
@@ -20,6 +8,7 @@ class Ticket < ActiveRecord::Base
 
   before_validation :set_token_details
   after_create :set_current_if_none_current, :publish_new_ticket_no
+  after_update :publish_waiting_count
 
   def activate!
     CurrentTicket.fetch.set_ticket(self)
@@ -32,7 +21,7 @@ class Ticket < ActiveRecord::Base
   end
 
   def mark_waiting!(wting = true)
-    self.update_attribute(:waiting, wting)
+    self.update_attributes(waiting: wting)
   end
 
 
@@ -62,7 +51,22 @@ private
 
   def publish_new_ticket_no
     publish_to_pubnub({
-        next_ticket_no: self.ticket_no + 1
+        next_ticket_no: self.ticket_no + 1,
+        waiting_count: Ticket.waiting.count,
+        serving_name: CurrentTicket.fetch.ticket.name,
+        serving_no: CurrentTicket.fetch.ticket.ticket_no
+      }, "queue"
+    )
+  end
+
+  def publish_waiting_count
+    return if self.waiting == self.waiting_was
+    publish_to_pubnub({
+      waiting_count: Ticket.waiting.count,
+      serving_name: CurrentTicket.fetch.ticket.name,
+      serving_no: CurrentTicket.fetch.ticket.ticket_no,
+      recently_changed_no: self.ticket_no,
+      waiting: self.waiting
       }, "queue"
     )
   end
